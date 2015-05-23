@@ -1,14 +1,31 @@
 <?php
 class user {
     function _check($COOKIE){
-        $USERNAME = fm::ungroup($COOKIE)[0];
-        $PASSWORD = fm::ungroup($COOKIE)[1];
+        $UNGROUP = fm::ungroup($COOKIE);
+        $USERNAME = $UNGROUP[0];
+        $PASSWORD = $UNGROUP[1];
         $SQL_USERNAME = fm::sql($USERNAME);
         $SQL_PASSWORD = fm::sign($PASSWORD);
         
         // Check if the user matches
         if (count(db::get("SELECT * FROM user WHERE username = '$SQL_USERNAME' AND password = '$SQL_PASSWORD'"))){
             return true;
+        } else {
+            return false;
+        }
+    }
+    
+    function _get_id($COOKIE){
+        $UNGROUP = fm::ungroup($COOKIE);
+        $USERNAME = $UNGROUP[0];
+        $PASSWORD = $UNGROUP[1];
+        $SQL_USERNAME = fm::sql($USERNAME);
+        $SQL_PASSWORD = fm::sign($PASSWORD);
+        
+        // Check if the user matches
+        $user = db::get("SELECT * FROM user WHERE username = '$SQL_USERNAME' AND password = '$SQL_PASSWORD'");
+        if (count($user)){
+            return intval($user[0]['user_id']);
         } else {
             return false;
         }
@@ -38,6 +55,7 @@ class user {
                 (username, password, coin) VALUES 
                 ('$SQL_USERNAME','$SQL_PASSWORD', 100)
             ");
+            
             put::succeed(array(
                 "user_id" => intval($USER_ID),
                 "cookie" => $COOKIE
@@ -61,9 +79,7 @@ class user {
         
         // Check if the user matches
         if (count(db::get("SELECT * FROM user WHERE username = '$SQL_USERNAME' AND password = '$SQL_PASSWORD'"))){
-            put::succeed(array(
-                "cookie" => $COOKIE
-            ));
+            put::succeed(array("cookie"=>$COOKIE));
         } else {
             put::error("username or password doesn't match");
         }
@@ -78,8 +94,9 @@ class user {
         $COOKIE = $DATA['cookie'];
         
         // Process data
-        $USERNAME = fm::ungroup($COOKIE)[0];
-        $PASSWORD = fm::ungroup($COOKIE)[1];
+        $UNGROUP = fm::ungroup($COOKIE);
+        $USERNAME = $UNGROUP[0];
+        $PASSWORD = $UNGROUP[1];
         $SQL_USERNAME = fm::sql($USERNAME);
         $SQL_PASSWORD = fm::sign($PASSWORD);
         

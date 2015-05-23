@@ -1,5 +1,6 @@
 <?php
 class db{
+    /* get mysql data */
     static function get($sql)
     {
         $link = mysqli_connect(MYSQL_HOST, MYSQL_USER, MYSQL_PASS);
@@ -26,6 +27,7 @@ class db{
         return $gets;
     }
     
+    /* get rows number */
     static function rows($sql){
         $link = mysqli_connect(MYSQL_HOST, MYSQL_USER, MYSQL_PASS);
         mysqli_select_db($link, MYSQL_DB);
@@ -35,6 +37,7 @@ class db{
         return mysqli_num_rows($result);
     }
     
+    /* insert or update mysql data */
     static function set($sql)
     {
         $link = mysqli_connect(MYSQL_HOST, MYSQL_USER, MYSQL_PASS);
